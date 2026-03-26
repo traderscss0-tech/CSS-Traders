@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --color-gold: #d4af37;
+  --color-gold-light: #f1d592;
+  --color-dark: #0b0b0b;
+  --color-dark-soft: #1a1a1a;
+  
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-dark text-white font-sans antialiased;
+  }
+}
+
+@layer utilities {
+  .gold-glow {
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+  }
+  .gold-border-glow {
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+  }
+  .glass-card {
+    @apply bg-dark-soft/50 backdrop-blur-md border border-white/10;
+  }
+  .animate-spin-slow {
+    animation: spin 20s linear infinite;
+  }
+  .animate-spin-slow-reverse {
+    animation: spin 25s linear infinite reverse;
+  }
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
