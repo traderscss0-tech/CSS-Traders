@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion"; 
+import { motion } from "framer-motion"; 
 import { Mail, MapPin, Send, Clock, CheckCircle2, ShieldCheck, AlertCircle } from "lucide-react";
 
 const WhatsAppIcon = ({ size = 18, className = "" }) => (
@@ -16,47 +16,42 @@ const Contact = () => {
     message: ""
   });
 
-  const [status, setStatus] = useState({ type: "", msg: "" }); 
+  const [status, setStatus] = useState(""); 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    if (status.msg) setStatus({ type: "", msg: "" }); // টাইপ করার সময় এরর মেসেজ সরিয়ে ফেলা
   };
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) {
-      setStatus({ type: "error", msg: "Please fill all fields first." });
+      setStatus("Please fill all fields first.");
       return;
     }
 
     setIsSubmitting(true);
-    setStatus({ type: "loading", msg: "Sending Email..." });
-
-    const submitData = new FormData();
-    submitData.append("access_key", "d64235e9-9a55-4364-b316-c1eef28f8ba2"); 
-    submitData.append("name", formData.name);
-    submitData.append("email", formData.email);
-    submitData.append("topic", formData.topic);
-    submitData.append("message", formData.message);
+    setStatus("Sending...");
 
     try {
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        body: submitData
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          access_key: "d64235e9-9a55-4364-b316-c1eef28f8ba2",
+          ...formData
+        })
       });
 
       const data = await response.json();
-
       if (data.success) {
-        setStatus({ type: "success", msg: "Email Sent Successfully!" });
+        setStatus("Successfully Sent!");
         setFormData({ name: "", email: "", topic: "Pro Membership Access", message: "" });
       } else {
-        setStatus({ type: "error", msg: "Failed: " + data.message });
+        setStatus("Error sending email.");
       }
-    } catch (error) {
-      setStatus({ type: "error", msg: "Network error. Use WhatsApp instead." });
+    } catch (err) {
+      setStatus("Network error.");
     } finally {
       setIsSubmitting(false);
     }
@@ -65,153 +60,91 @@ const Contact = () => {
   const handleWhatsAppSubmit = (e) => {
     e.preventDefault();
     if (!formData.name || !formData.message) {
-      setStatus({ type: "error", msg: "Enter Name and Message for WhatsApp." });
+      setStatus("Enter Name and Message first.");
       return;
     }
 
     const phoneNumber = "919832797759";
-    const whatsappMessage = `*New Website Inquiry*%0A%0A` +
-      `*Name:* ${encodeURIComponent(formData.name)}%0A` +
-      `*Email:* ${encodeURIComponent(formData.email)}%0A` +
-      `*Topic:* ${encodeURIComponent(formData.topic)}%0A` +
-      `*Message:* ${encodeURIComponent(formData.message)}`;
-
-    const whatsappURL = `https://wa.me/${phoneNumber}?text=${whatsappMessage}`;
+    const text = `*New Inquiry*%0A*Name:* ${encodeURIComponent(formData.name)}%0A*Topic:* ${encodeURIComponent(formData.topic)}%0A*Message:* ${encodeURIComponent(formData.message)}`;
     
-    // মোবাইলে Redirection স্মুথ করার জন্য
-    setStatus({ type: "success", msg: "Redirecting to WhatsApp..." });
-    setTimeout(() => {
-        window.location.href = whatsappURL; 
-    }, 500);
+    // মোবাইলের জন্য সবথেকে নিরাপদ রিডাইরেকশন পদ্ধতি
+    const whatsappURL = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${text}`;
+    
+    setStatus("Opening WhatsApp...");
+    window.location.assign(whatsappURL);
   };
 
   return (
-    <main className="pt-24 md:pt-32 pb-16 px-4 md:px-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+    <main className="pt-24 md:pt-32 pb-16">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid lg:grid-cols-2 gap-12 items-start text-left">
           
-          {/* Left Side */}
-          <div className="text-left">
-            <motion.h1
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-6xl font-bold mb-6 text-white"
-            >
+          {/* Left Content */}
+          <div>
+            <motion.h1 className="text-4xl md:text-6xl font-bold mb-6 text-white leading-tight">
               Get in <span className="text-gold italic">Touch</span>
             </motion.h1>
-            
-            <p className="text-white/60 text-base md:text-lg mb-8 leading-relaxed max-w-xl">
-              Have questions about our <span className="text-white font-bold">Pro Membership</span>, <span className="text-white font-bold">Real-time Trade Calls</span>, or <span className="text-white font-bold">1-on-1 Mentorship</span>?
+            <p className="text-white/60 text-lg mb-8 leading-relaxed max-w-md">
+                Have questions about our <span className="text-white">Pro Membership</span> or <span className="text-white">Mentorship</span>? We respond fast.
             </p>
 
-            <motion.div 
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gold/10 border border-gold/20 text-gold text-xs md:text-sm font-medium mb-10"
-            >
-              <Clock size={16} />
-              <span>Response: Instant on WhatsApp</span>
-            </motion.div>
-
             <div className="space-y-6">
-              {[
-                { icon: <Mail className="text-gold" size={20} />, title: "Email Us", detail: "traderscss0@gmail.com", link: "mailto:traderscss0@gmail.com" },
-                { icon: <WhatsAppIcon size={22} className="text-gold" />, title: "WhatsApp & Call", detail: "+91 98327 97759", link: "https://wa.me/919832797759" },
-              ].map((item, i) => (
-                <a 
-                  href={item.link} 
-                  key={i} 
-                  className="flex gap-4 md:gap-6 items-center group bg-white/5 p-4 rounded-2xl border border-white/5 hover:border-gold/30 transition-all"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center shrink-0 border border-white/10 group-hover:scale-110 transition-transform">
-                    {item.icon}
-                  </div>
-                  <div className="overflow-hidden">
-                    <h4 className="text-white/40 text-[10px] uppercase tracking-widest font-bold mb-1">{item.title}</h4>
-                    <p className="text-base md:text-xl font-bold text-white truncate">{item.detail}</p>
-                  </div>
-                </a>
-              ))}
+              <div className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/10 max-w-sm">
+                <div className="w-10 h-10 bg-gold/10 rounded-lg flex items-center justify-center text-gold"><Mail size={20}/></div>
+                <div>
+                  <p className="text-[10px] text-white/40 uppercase font-bold tracking-widest">Email</p>
+                  <p className="text-white font-bold">traderscss0@gmail.com</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/10 max-w-sm">
+                <div className="w-10 h-10 bg-[#25D366]/10 rounded-lg flex items-center justify-center text-[#25D366]"><WhatsAppIcon size={20}/></div>
+                <div>
+                  <p className="text-[10px] text-white/40 uppercase font-bold tracking-widest">WhatsApp</p>
+                  <p className="text-white font-bold">+91 98327 97759</p>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Right Side Form */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="glass-card p-6 md:p-10 rounded-[32px] border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl"
-          >
+          {/* Form */}
+          <motion.div className="bg-white/5 backdrop-blur-xl p-6 md:p-10 rounded-[30px] border border-white/10 shadow-2xl">
             <form className="space-y-5">
-              <div className="grid md:grid-cols-2 gap-5">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-white/40 ml-1">Full Name</label>
-                  <input name="name" type="text" value={formData.name} onChange={handleChange} placeholder="John Doe" className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 focus:border-gold/50 focus:outline-none text-white text-sm" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-white/40 ml-1">Email Address</label>
-                  <input name="email" type="email" value={formData.email} onChange={handleChange} placeholder="name@example.com" className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 focus:border-gold/50 focus:outline-none text-white text-sm" />
-                </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <input name="name" type="text" value={formData.name} onChange={handleChange} placeholder="Full Name" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 focus:border-gold/50 outline-none text-white text-sm" />
+                <input name="email" type="email" value={formData.email} onChange={handleChange} placeholder="Email" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 focus:border-gold/50 outline-none text-white text-sm" />
               </div>
+              
+              <select name="topic" value={formData.topic} onChange={handleChange} className="w-full bg-zinc-900 border border-white/10 rounded-xl px-4 py-4 focus:border-gold/50 outline-none text-white text-sm">
+                <option>Pro Membership Access</option>
+                <option>Mentorship Program</option>
+                <option>Other Queries</option>
+              </select>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-white/40 ml-1">Topic of Interest</label>
-                <div className="relative">
-                    <select name="topic" value={formData.topic} onChange={handleChange} className="w-full bg-black/40 border border-white/10 rounded-xl px-5 py-4 focus:border-gold/50 focus:outline-none text-white/80 appearance-none text-sm cursor-pointer">
-                        <option className="bg-zinc-900">Pro Membership Access</option>
-                        <option className="bg-zinc-900">Mentorship Program</option>
-                        <option className="bg-zinc-900">Live Trade Calls Support</option>
-                        <option className="bg-zinc-900">Copy Trading</option>
-                        <option className="bg-zinc-900">Other Queries</option>
-                    </select>
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-40">▼</div>
+              <textarea name="message" value={formData.message} onChange={handleChange} rows={4} placeholder="Your Message..." className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 focus:border-gold/50 outline-none text-white text-sm resize-none"></textarea>
+
+              {status && (
+                <div className={`p-3 rounded-lg text-xs text-center font-bold ${status.includes("Success") ? "bg-green-500/10 text-green-500" : "bg-gold/10 text-gold"}`}>
+                  {status}
                 </div>
-              </div>
+              )}
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-white/40 ml-1">Message</label>
-                <textarea name="message" value={formData.message} onChange={handleChange} rows={3} placeholder="How can we help you?" className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 focus:border-gold/50 focus:outline-none text-white text-sm resize-none"></textarea>
-              </div>
-
-              {/* Status Message */}
-              <AnimatePresence mode="wait">
-                {status.msg && (
-                    <motion.div 
-                        initial={{ opacity: 0, height: 0 }} 
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className={`flex items-center gap-2 p-3 rounded-lg text-xs font-medium ${
-                            status.type === "success" ? "bg-green-500/10 text-green-400 border border-green-500/20" : 
-                            status.type === "error" ? "bg-red-500/10 text-red-400 border border-red-500/20" : 
-                            "bg-gold/10 text-gold border border-gold/20"
-                        }`}
-                    >
-                        {status.type === "success" ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
-                        {status.msg}
-                    </motion.div>
-                )}
-              </AnimatePresence>
-
-              {/* Action Buttons */}
-              <div className="grid sm:grid-cols-2 gap-4 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                 <button 
-                  type="button"
+                  type="button" 
                   onClick={handleEmailSubmit}
                   disabled={isSubmitting}
-                  className="w-full bg-gold text-black font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-50"
+                  className="w-full bg-gold text-black font-black py-4 rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform"
                 >
-                  {isSubmitting ? "Sending..." : "Send Email"} <Send size={16} />
+                  {isSubmitting ? "..." : "SEND EMAIL"} <Send size={16} />
                 </button>
 
                 <button 
-                  type="button"
+                  type="button" 
                   onClick={handleWhatsAppSubmit}
-                  className="w-full bg-[#25D366] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
+                  className="w-full bg-[#25D366] text-white font-black py-4 rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform"
                 >
-                  WhatsApp <WhatsAppIcon size={18} />
+                  WHATSAPP <WhatsAppIcon size={18} />
                 </button>
-              </div>
-
-              <div className="flex items-center justify-center gap-2 text-[9px] text-white/20 uppercase tracking-[2px] pt-4">
-                <ShieldCheck size={12} />
-                <span>Secure & Professional</span>
               </div>
             </form>
           </motion.div>
