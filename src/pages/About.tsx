@@ -15,7 +15,7 @@ const About = () => {
             Our Mission: <span className="text-gold italic">Integrity</span> <br />in Trading
           </motion.h1>
           <p className="text-white/60 text-xl max-w-3xl mx-auto leading-relaxed">
-            We are a team of professional traders dedicated to raising the standard of forex education in South Asia. No hype, just real skills.
+            We are a team of professional traders dedicated to raising the standard of forex education in India. No hype, just real skills.
           </p>
         </div>
 
@@ -30,7 +30,7 @@ const About = () => {
               />
             </div>
             <div className="absolute -bottom-6 -left-6 glass-card p-6 rounded-2xl border-gold/30">
-              <div className="text-gold text-2xl font-bold">Est. 2021</div>
+              <div className="text-gold text-2xl font-bold">Est. 2026</div>
             </div>
           </div>
           
@@ -44,8 +44,8 @@ const About = () => {
             </p>
             <div className="grid grid-cols-2 gap-6">
               {[
-                { label: 'Active Students', value: '2,500+' },
-                { label: 'Live Sessions', value: '500+' },
+                { label: 'Active Students', value: '1,000+' },
+                { label: 'Live Sessions', value: '300+' },
                 { label: 'Success Rate', value: '85%' },
                 { label: 'Support Hours', value: '24/7' }
               ].map((stat, i) => (
