@@ -207,7 +207,7 @@ const Services = () => {
                   </div>
                 </div>
               </div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gold/10 blur-[120px] -z-0"></div>
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gold/10 blur-[120px] z-0"></div>
             </div>
           </div>
         </motion.div>
@@ -268,7 +268,7 @@ const Services = () => {
             </div>
           </motion.div>
 
-          {/* Pricing Card */}
+          
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -304,7 +304,7 @@ const Services = () => {
                   <div key={item} className="flex items-center gap-4">
                     <CheckCircle2
                       size={16}
-                      className="text-gold flex-shrink-0"
+                      className="text-gold shrink-0"
                     />
                     <span className="text-white/80 font-medium text-sm">
                       {item}
@@ -328,10 +328,10 @@ const Services = () => {
         </div>
       </div>
 
-      {/* --- PAYMENT MODAL (REFINED COPY LOGIC) --- */}
+   
       <AnimatePresence>
         {isModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -378,7 +378,7 @@ const Services = () => {
                         {item.network}
                       </span>
 
-                      {/* FIX: এখানে copiedText === item.network দিয়ে চেক করা হচ্ছে */}
+                      
                       <button
                         onClick={() => handleCopy(item.network, item.address)}
                         className="text-gold hover:text-white transition-colors flex items-center gap-1 text-[10px] font-bold uppercase"
