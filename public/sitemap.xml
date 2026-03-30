@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
   <url>
-    <loc>https://css-traders.vercel.app/</loc>
+    <loc>https://csstraders.co.in/</loc>
   </url>
+
   <url>
-    <loc>https://css-traders.vercel.app/About</loc>
+    <loc>https://csstraders.co.in/About</loc>
   </url>
+
   <url>
-    <loc>https://css-traders.vercel.app/Contact</loc>
+    <loc>https://csstraders.co.in/Contact</loc>
   </url>
+
   <url>
-    <loc>https://css-traders.vercel.app/Services</loc>
+    <loc>https://csstraders.co.in/Services</loc>
   </url>
+
   <url>
-    <loc>https://css-traders.vercel.app/Resources</loc>
+    <loc>https://csstraders.co.in/Resources</loc>
   </url>
+
 </urlset>
